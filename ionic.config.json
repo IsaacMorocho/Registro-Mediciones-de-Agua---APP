@@ -1,0 +1,7 @@
+{
+  "name": "aguApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
