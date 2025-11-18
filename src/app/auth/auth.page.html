@@ -1,0 +1,152 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ activeTab === 'login' ? 'Iniciar Sesión' : 'Registrarse' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- ✅ Segments FUERA de los formularios -->
+  <ion-segment [(ngModel)]="activeTab" (ionChange)="onTabChange($event)">
+    <ion-segment-button value="login">
+      <ion-label>Iniciar Sesión</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="register">
+      <ion-label>Registrarse</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <!-- LOGIN FORM -->
+  <form *ngIf="activeTab === 'login'" [formGroup]="loginForm" (ngSubmit)="login()" class="ion-margin-top">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Bienvenido</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <!-- ✅ Selector de tipo de usuario FUERA del form -->
+        <ion-item class="ion-margin-bottom">
+          <ion-label>Tipo de Usuario:</ion-label>
+        </ion-item>
+        <ion-segment [(ngModel)]="userType" [ngModelOptions]="{standalone: true}" (ionChange)="onUserTypeChange($event)" class="ion-margin-bottom">
+          <ion-segment-button value="admin">
+            <ion-label>Admin</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="medidor">
+            <ion-label>Medidor</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+
+        <ion-list>
+          <ion-item>
+            <ion-label position="floating">Correo Electrónico</ion-label>
+            <ion-input
+              type="email"
+              formControlName="email"
+              placeholder="tu@email.com"
+            ></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input
+              type="password"
+              formControlName="password"
+              placeholder="••••••"
+            ></ion-input>
+          </ion-item>
+
+          <ion-text color="medium" class="ion-margin-top ion-text-center">
+            <p><small *ngIf="userType === 'admin'">ℹ️ Los administradores se registran desde Firebase Console</small></p>
+            <p><small *ngIf="userType === 'medidor'">ℹ️ Los medidores se registran en la pestaña de Registro</small></p>
+          </ion-text>
+
+          <ion-button
+            expand="block"
+            type="submit"
+            class="ion-margin-top"
+            [disabled]="loginForm.invalid || isLoading"
+          >
+            <ion-spinner *ngIf="isLoading" slot="start"></ion-spinner>
+            {{ isLoading ? 'Cargando...' : 'Iniciar Sesión' }}
+          </ion-button>
+          <ion-button
+  expand="block"
+  fill="clear"
+  size="small"
+  class="ion-margin-top"
+  (click)="resendVerification()"
+  [disabled]="isLoading"
+>
+  ¿No recibiste el email? Reenviar verificación
+</ion-button>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </form>
+
+  <!-- REGISTER FORM (Solo para Medidores) -->
+  <form *ngIf="activeTab === 'register'" [formGroup]="registerForm" (ngSubmit)="register()" class="ion-margin-top">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Crear Nueva Cuenta de Medidor</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-text color="medium" class="ion-margin-bottom">
+          <p><small>ℹ️ Solo los Medidores pueden registrarse. Los Administradores se registran en Firebase Console.</small></p>
+        </ion-text>
+        <ion-list>
+          <ion-item>
+            <ion-label position="floating">Nombre Completo</ion-label>
+            <ion-input
+              type="text"
+              formControlName="displayName"
+              placeholder="Tu nombre"
+            ></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating">Correo Electrónico</ion-label>
+            <ion-input
+              type="email"
+              formControlName="email"
+              placeholder="tu@email.com"
+            ></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input
+              type="password"
+              formControlName="password"
+              placeholder="••••••"
+            ></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating">Confirmar Contraseña</ion-label>
+            <ion-input
+              type="password"
+              formControlName="confirmPassword"
+              placeholder="••••••"
+            ></ion-input>
+          </ion-item>
+
+          <ion-text color="medium" class="ion-margin-top">
+            <p><small>✓ Se te enviará un correo de verificación</small></p>
+            <p><small>✓ Tu rol será automáticamente "Medidor"</small></p>
+            <p><small>Al registrarse, aceptas nuestros términos de servicio.</small></p>
+          </ion-text>
+
+          <ion-button
+            expand="block"
+            type="submit"
+            class="ion-margin-top"
+            [disabled]="registerForm.invalid || isLoading"
+          >
+            <ion-spinner *ngIf="isLoading" slot="start"></ion-spinner>
+            {{ isLoading ? 'Registrando...' : 'Registrarse' }}
+          </ion-button>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </form>
+</ion-content>

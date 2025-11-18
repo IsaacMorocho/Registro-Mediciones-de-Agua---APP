@@ -1,0 +1,115 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Dashboard - Medidor</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">
+        <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Información del usuario -->
+  <ion-card *ngIf="currentUser">
+    <ion-card-header>
+      <ion-card-title>¡Hola, {{ currentUser.displayName }}!</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-chip color="success">
+        <ion-label>{{ currentUser.role }}</ion-label>
+      </ion-chip>
+      <ion-text color="medium">
+        <p>{{ currentUser.email }}</p>
+      </ion-text>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Estadísticas rápidas -->
+  <ion-grid>
+    <ion-row>
+      <ion-col size="6">
+        <ion-card>
+          <ion-card-content class="ion-text-center">
+            <ion-icon name="stats-chart-outline" size="large" color="primary"></ion-icon>
+            <h2>{{ measurements.length }}</h2>
+            <p>Mediciones totales</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col size="6">
+        <ion-card>
+          <ion-card-content class="ion-text-center">
+            <ion-icon name="camera-outline" size="large" color="secondary"></ion-icon>
+            <h2>{{ measurementsWithPhoto }}</h2>
+            <p>Con evidencia</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Lista de mediciones -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Mis Mediciones</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <!-- Loading spinner -->
+      <div *ngIf="isLoading" class="ion-text-center ion-padding">
+        <ion-spinner></ion-spinner>
+        <p>Cargando mediciones...</p>
+      </div>
+
+      <!-- Sin mediciones -->
+      <div *ngIf="!isLoading && measurements.length === 0" class="ion-text-center ion-padding">
+        <ion-icon name="stats-chart-outline" size="large" color="medium"></ion-icon>
+        <p>Aún no tienes mediciones registradas</p>
+        <ion-button (click)="createNewMeasurement()">
+          <ion-icon slot="start" name="add"></ion-icon>
+          Crear primera medición
+        </ion-button>
+      </div>
+
+      <ion-list *ngIf="!isLoading && measurements.length > 0">
+        <ion-item *ngFor="let measurement of measurements">
+          <ion-avatar slot="start" *ngIf="measurement.meterPhotoURL">
+            <img [src]="measurement.meterPhotoURL" alt="Evidencia" />
+          </ion-avatar>
+          <ion-icon 
+            slot="start" 
+            name="stats-chart-outline" 
+            size="large" 
+            color="primary"
+            *ngIf="!measurement.meterPhotoURL"
+          ></ion-icon>
+          
+          <ion-label>
+            <h2>Lectura: {{ measurement.meterValue }} {{ measurement.unit }}</h2>
+            <p>{{ measurement.observations }}</p>
+            <p>
+              <ion-text color="medium">
+                <small>{{ measurement.createdAt | date:'short' }}</small>
+              </ion-text>
+            </p>
+          </ion-label>
+
+          <ion-button 
+            fill="clear" 
+            slot="end" 
+            (click)="openInMaps(measurement.latitude, measurement.longitude)"
+            *ngIf="measurement.latitude && measurement.longitude"
+          >
+            <ion-icon name="location-outline" color="success"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="createNewMeasurement()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

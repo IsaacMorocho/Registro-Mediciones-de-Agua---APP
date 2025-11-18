@@ -1,0 +1,99 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Mediciones de Usuarios</ion-title>
+</ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div *ngIf="isLoading" class="ion-text-center ion-padding">
+    <ion-spinner></ion-spinner>
+    <p>Cargando mediciones...</p>
+  </div>
+
+  <ion-list *ngIf="!isLoading && measurements.length > 0">
+    <ion-card *ngFor="let measurement of measurements" class="ion-margin-bottom">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="person-outline" slot="start"></ion-icon>
+          {{ getUserDisplayName(measurement.userId) }}
+        </ion-card-title>
+        <ion-badge color="primary">{{ measurement.unit }}</ion-badge>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-grid *ngIf="measurement.meterPhotoURL || measurement.facadePhotoURL">
+          <ion-row>
+            <ion-col size="6" *ngIf="measurement.meterPhotoURL">
+              <ion-card>
+                <img [src]="measurement.meterPhotoURL" />
+                <ion-card-content>
+                  <ion-text color="medium">
+                    <small>Medidor</small>
+                  </ion-text>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+            <ion-col size="6" *ngIf="measurement.facadePhotoURL">
+              <ion-card>
+                <img [src]="measurement.facadePhotoURL" />
+                <ion-card-content>
+                  <ion-text color="medium">
+                    <small>Fachada</small>
+                  </ion-text>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+        <ion-list>
+          <ion-item>
+            <ion-label>
+              <h2><strong>Lectura:</strong> {{ measurement.meterValue }} {{ measurement.unit }}</h2>
+            </ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>
+              <p><strong>Observaciones:</strong> {{ measurement.observations || 'Sin observaciones' }}</p>
+            </ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>
+              <p><strong>Fecha:</strong> {{ measurement.createdAt | date:'short' }}</p>
+            </ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>
+              <p><strong>Ubicación:</strong> {{ measurement.address || 'N/A' }}</p>
+            </ion-label>
+            <ion-button 
+              fill="clear" 
+              slot="end"
+              (click)="openInMaps(measurement.latitude, measurement.longitude)"
+              *ngIf="measurement.latitude && measurement.longitude"
+            >
+              <ion-icon name="location-outline" color="success"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ion-list>
+        <ion-button 
+          expand="block" 
+          color="danger" 
+          (click)="deleteMeasurement(measurement)"
+          class="ion-margin-top"
+        >
+          <ion-icon slot="start" name="trash-outline"></ion-icon>
+          Eliminar Medición
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+
+  <div *ngIf="!isLoading && measurements.length === 0" class="ion-text-center ion-padding">
+    <ion-icon name="stats-chart-outline" size="large" color="medium"></ion-icon>
+    <p>No hay mediciones registradas</p>
+  </div>
+</ion-content>

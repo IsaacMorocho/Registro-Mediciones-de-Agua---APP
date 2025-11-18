@@ -1,0 +1,32 @@
+ion-card {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+ion-item {
+  --padding-start: 0;
+  --padding-end: 0;
+  margin-bottom: 0.5rem;
+}
+
+ion-label p {
+  margin: 0.25rem 0;
+}
+
+ion-text ul {
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+ion-text li {
+  margin: 0.25rem 0;
+}
+
+ion-button {
+  margin-top: 0.5rem;
+}
+
+[color="primary"] {
+  --ion-color-primary: #3880ff;
+}

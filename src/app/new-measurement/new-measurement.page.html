@@ -1,0 +1,115 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Nueva Medición</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="measurementForm" (ngSubmit)="submitMeasurement()">
+    
+    <!-- Foto del Medidor -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>📷 Foto del Medidor *</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div *ngIf="!meterPhoto" class="photo-placeholder" (click)="takeMeterPhoto()">
+          <ion-icon name="camera-outline" size="large"></ion-icon>
+          <p>Toca para tomar foto</p>
+        </div>
+        <div *ngIf="meterPhoto" class="photo-preview">
+          <img [src]="meterPhoto.webPath" alt="Foto del medidor" />
+          <ion-button fill="clear" color="danger" (click)="removeMeterPhoto()">
+            <ion-icon slot="icon-only" name="close-circle"></ion-icon>
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Foto de la Fachada -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>🏠 Foto de la Fachada (Opcional)</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div *ngIf="!facadePhoto" class="photo-placeholder" (click)="takeFacadePhoto()">
+          <ion-icon name="camera-outline" size="large"></ion-icon>
+          <p>Toca para tomar foto</p>
+        </div>
+        <div *ngIf="facadePhoto" class="photo-preview">
+          <img [src]="facadePhoto.webPath" alt="Foto de la fachada" />
+          <ion-button fill="clear" color="danger" (click)="removeFacadePhoto()">
+            <ion-icon slot="icon-only" name="close-circle"></ion-icon>
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Ubicación -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>📍 Ubicación *</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-button expand="block" (click)="getLocation()" [disabled]="isSubmitting">
+          <ion-icon slot="start" name="location-outline"></ion-icon>
+          {{ currentLocation ? 'Actualizar ubicación' : 'Obtener ubicación' }}
+        </ion-button>
+        <ion-text *ngIf="currentLocation" color="success">
+          <p class="ion-margin-top">
+            <small>✓ {{ currentLocation.address }}</small>
+          </p>
+        </ion-text>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>📊 Lectura del Medidor</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="floating">Valor *</ion-label>
+          <ion-input
+            type="number"
+            formControlName="meterValue"
+            placeholder="Ingresa el valor"
+          ></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Unidad *</ion-label>
+          <ion-input
+            type="text"
+            formControlName="unit"
+            placeholder="m³, kWh, etc."
+          ></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Observaciones</ion-label>
+          <ion-textarea
+            formControlName="observations"
+            rows="3"
+            placeholder="Detalles adicionales (opcional)"
+          ></ion-textarea>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Botón Guardar -->
+    <ion-button
+      expand="block"
+      type="submit"
+      color="success"
+      class="ion-margin-top"
+      [disabled]="measurementForm.invalid || !meterPhoto || !currentLocation || isSubmitting"
+    >
+      <ion-icon slot="start" name="save-outline"></ion-icon>
+      {{ isSubmitting ? 'Guardando...' : 'Guardar Medición' }}
+    </ion-button>
+  </form>
+</ion-content>
