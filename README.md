@@ -66,3 +66,5 @@ Puede crear nuevas mediciones con el modal:
 - **Pantalla de registro para el rol Medidor**:
 
   <img width="714" height="1599" alt="image" src="https://github.com/user-attachments/assets/044fdf6b-fe39-40a6-a95f-d7086ac186a8" />
+
+## El apk se encuentra en la raiz del proyecto con el nombre: **AguApp**.
